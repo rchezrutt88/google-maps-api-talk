@@ -42,8 +42,22 @@ $(function() {
 
     myMap.addListener('click', setMyFavoriteLunchSpot);
 
+    let myGeocoder = new google.maps.Geocoder();
+
+    let getCoordinates = function(address) {
+      myGeocoder.geocode({
+        'address': address
+      }, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          console.log(results.toString());
+        } else {
+          throw (status)
+        };
+      });
+    };
+
+    getCoordinates("Sweet Green, South Boston");
 
   });
-
 
 });

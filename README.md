@@ -106,6 +106,30 @@ myMap.addListener('click', setMyFavoriteLunchSpot);
 });
 ```
 
+## Geecoding
+
+But what if the user doesn't _know_ the exact location of their favorite lunch spot? Suppose, for instance, that our app took a string containing a general address (but not coordinates) of the lunch spot and we wanted to mark it on the map?
+
+For this operation we'd need something called geocoding. We do it every time we enter an address into Google Maps. In fact, it's now so routine that we forget what a remarkable piece of magic this is: Google Maps needs to parse our string and then compare it against a database of all the world's addresses and find the closest match.
+
+But thankfully we don't need to worry about all that. We can simply initialize a new Geocoder object and start feeding it sloppy, aribitrarily formatted addresses and rejoice as it returns nice, clean coordinates.
+
+Let's do it now:
+```
+let geocoder = new google.maps.Geocoder();
+
+let getCoordinates = function
+```
+
+
+## The Geometry Library
+
+Interesting functions for calculating distance, etc.
+
+https://developers.google.com/maps/documentation/javascript/geometry#Distance
+
+
+
 Grabbing the coordinates of a click is as simple as retrieving the latLng property from the event!
 
 1. We are indeed in a "common js" environment and cannot call the loader off the window object so this step is necessary, correct?
