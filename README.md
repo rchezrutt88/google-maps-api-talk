@@ -8,7 +8,7 @@ Registering with the Google API manager is [easy](https://developers.google.com/
 
 Now let's install the [google-maps npm module](https://www.npmjs.com/package/google-maps) into our new project by running ```npm install google-maps --save-dev``` inside our project directory. This is not strictly necessary, but it will make our lives easier by creating a nice, friendly wrapper around the Google Maps API to handle asyncronous calls, and it jibes well with the patterns we've been using in WDI.
 
-## Initialize A Map
+## Initialize a Map
 
 Time to create our first map...but first just a tiny bit more setting up.
 
@@ -23,22 +23,89 @@ let GoogleMapsLoader = require('google-maps');
 ```
 GoogleMapsLoader.KEY = <your-key>;
 ```
-...then finally declare a variable to store your impending map object:
+...declare a variable to store your impending map object:
 ```
 let myMap;
 ```
-Now you're ready to tell your loader you're reader for it to initialize a map. Do it like this:
+...and finally create a div to hold your map and give it a reasonable size:
+```
+//index.html
+<div id="map"></div>
+
+//index.scss
+#map {
+  height: 400px;
+  width: 600px;
+}
+```
+Now you're ready to tell your loader you're prepared for it to initialize a map. Do it like this:
 
 ```
 GoogleMapsLoader.load(function(google) {
-    map = new google.maps.Map($("#map")[0], {
+    myMap = new google.maps.Map($("#map")[0], {
       center: {
         lat: 42.349239,
         lng: -71.050045
       },
       zoom: 15,
     });
-    geocoder = new google.maps.Geocoder();
   });
 ```
+
+(This pattern should look vaguely familiar--yes, that's a callback! It's essentially making an asyncronous request to Google for the latest, most up-to-date version of their map class.)
+
+Now open your page...
+
+Your first embedded map!
+
+## Okay, now what?
+
+You've got your map. Now let's do something with it.
+
+One of the most common actions you'll likely perform with an embedded map objects is displaying and retreiving locations. If you're developing a website for a restaurant chain, you may wish to have your map display all the locations, or say you're developing an app where users can mark their favorite restaurants.
+
+
+## Hard Setting Markers
+
+Let's start with the first example and configure our map to display a marker on the Atlantic Wharf Boloco when it loads.
+
+```
+//create a new latlng literal. See google latlng object docs:
+let bolocoLatLng = {lat: 42.353439, lng: -71.052872};
+//create a new marker object
+let myFavoriteLunchSpot = new google.maps.Marker({
+    position: bolocoLatLng,
+    map: myMap, //add it to your myMap
+    title: 'My Favorite Lunch Spot!'
+  });
+  myMap.setCenter(bolocoLatLng); //center map on boloco!
+```
+
+Now when we load our map it's centered on Boloco and there's a default marker.
+
+What if you don't want a default marker? What if you want, say, a cute burrito icon instead? Well, [that's easy to do, too](https://developers.google.com/maps/documentation/javascript/markers#icons)...but I'll leave that to you.
+
+## Events
+
+Now suppose my favorite restaurant weren't Boloco but Sweet Green and I wanted to mark it on the map.
+
+To do this, we're going to need to set up a custom click listener and handler:
+
+```
+let setMyFavoriteLunchSpot = function(e) {
+  myFavoriteLunchSpot = new google.maps.Marker({
+    position: e.latLng,
+    map: myMap,
+  });
+  myMap.panTo(myFavoriteLunchSpot.position)
+
+};
+
+myMap.addListener('click', setMyFavoriteLunchSpot);
+
+});
+```
+
+Grabbing the coordinates of a click is as simple as retrieving the latLng property from the event!
+
 1. We are indeed in a "common js" environment and cannot call the loader off the window object so this step is necessary, correct?
